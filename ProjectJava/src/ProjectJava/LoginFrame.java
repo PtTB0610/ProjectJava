@@ -131,7 +131,7 @@ public class LoginFrame extends javax.swing.JFrame {
         boolean flag = false;
         for (User user : arrUser) {
             if(txtUsername.getText().equals(user.getUsername()) && txtPassword.getText().equals(user.getUserpass())){
-                MainFrame mainFrame = new MainFrame(user);
+                MainFrame mainFrame = new MainFrame(user, arrUser);
                 mainFrame.setVisible(true);
                 flag = true;
                 this.dispose();
