@@ -34,7 +34,7 @@ public class LoginFrame extends javax.swing.JFrame {
              
         });
     }
-    ArrayList<User> arrUser = ReadWriteUser.layUserTuFile("user.txt");
+    ArrayList<User> arrUser = ReadWriteFile.layUserTuFile("user.txt");
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

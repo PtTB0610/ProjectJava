@@ -17,16 +17,16 @@ public class QuanLyUser {
     
     public QuanLyUser() {
         this.listUser = new ArrayList<User>();
-        this.listUser = ReadWriteUser.layUserTuFile("user.txt");
+        this.listUser = ReadWriteFile.layUserTuFile("user.txt");
         this.index = 0;
     }
 
-    public ArrayList<User> getListSach() {
+    public ArrayList<User> getListUser() {
         return listUser;
     }
 
     public void setListSach(ArrayList<User> listSach) {
-        this.listUser = listSach;
+        this.listUser = listUser;
     }
 
     public int getIndex() {
@@ -43,7 +43,7 @@ public class QuanLyUser {
     
     public void addSach(User user){
         listUser.add(user);
-        ReadWriteUser.ghiUserVaoFile("user.txt", listUser);
+        ReadWriteFile.ghiUserVaoFile("user.txt", listUser);
     }
     
     public void next(){
@@ -62,6 +62,6 @@ public class QuanLyUser {
     
     public void xoaSach(){
         listUser.remove(index);
-        ReadWriteUser.ghiUserVaoFile("user.txt", listUser);
+        ReadWriteFile.ghiUserVaoFile("user.txt", listUser);
     }
 }
