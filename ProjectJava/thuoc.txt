@@ -1,0 +1,5 @@
+D001:Dầu Gió Xanh:Chai:21200
+N002:Neurontin 300mg:Viên:78000
+N003:Natrol L-Arginine:Viên:78000
+X092:Xatral-XL 10mg:Chai:23330
+X095:Xenical 120mg:Chai:23830

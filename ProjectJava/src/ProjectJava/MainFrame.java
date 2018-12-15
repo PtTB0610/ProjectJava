@@ -17,19 +17,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    /**
-     * @return the selectedRow
-     */
-    public int getSelectedRow() {
-        return selectedRow;
-    }
-
-    /**
-     * @param selectedRow the selectedRow to set
-     */
-    public void setSelectedRow(int selectedRow) {
-        this.selectedRow = selectedRow;
-    }
+    
 
     /**
      * Creates new form MainFrame
@@ -37,17 +25,23 @@ public class MainFrame extends javax.swing.JFrame {
      */
     private User user;
     private ArrayList<User> arrUser;
-    private int selectedRow = 0;
+    private ArrayList<Thuoc> arrThuoc;
+    private int selectedRowUser = 0;
+    private int selectedRowThuoc = 0;
+    
     public MainFrame(User user, ArrayList<User> arrUser) {
         initComponents();
         this.user = user;
         this.arrUser = arrUser;
+        this.arrThuoc = ReadWriteFile.layThuocTuFile("thuoc.txt");
         txtCurrentUser.setText(user.getUsername());
         if(user.getUsertype() == 1){
-            MainJTabbed.setEnabledAt(3, false);
+            mainJTabbed.setEnabledAt(3, false);
         }
         jTableUser.setColumnSelectionAllowed(false);
+        jTableThuoc.setColumnSelectionAllowed(false);
         hienThiListUser();
+        hienThiListThuoc();
     }
     
     private void hienThiListUser(){
@@ -65,6 +59,43 @@ public class MainFrame extends javax.swing.JFrame {
         jTableUser.setModel(model);
     }
     
+    private void hienThiListThuoc(){
+        DefaultTableModel model;
+        model = (DefaultTableModel) jTableThuoc.getModel();
+        model.setRowCount(0);
+        for(Thuoc t : arrThuoc){
+            String [] data = new String[4];
+            data [0] = t.getMaThuoc();
+            data [1] = t.getTenThuoc();
+            data [2] = t.getDonViTinh();
+            data [3] = t.getDonGia() + "";
+            model.addRow(data);
+       }
+        jTableThuoc.setModel(model);
+    }
+    
+    
+    public int getSelectedRowThuoc() {
+        return selectedRowThuoc;
+    }
+
+    public void setSelectedRowThuoc(int selectedRowThuoc) {
+        this.selectedRowThuoc = selectedRowThuoc;
+    }
+    
+    /**
+     * @return the selectedRow
+     */
+    public int getSelectedRowUser() {
+        return selectedRowUser;
+    }
+
+    /**
+     * @param selectedRow the selectedRow to set
+     */
+    public void setSelectedRowUser(int selectedRow) {
+        this.selectedRowUser = selectedRow;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -76,10 +107,10 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        MainJTabbed = new javax.swing.JTabbedPane();
+        mainJTabbed = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        JTableThuoc = new javax.swing.JTable();
+        jTableThuoc = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -127,26 +158,38 @@ public class MainFrame extends javax.swing.JFrame {
         btnLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setText("Username :");
 
-        JTableThuoc.setModel(new javax.swing.table.DefaultTableModel(
+        jTableThuoc.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Mã Thuốc", "Tên Thuốc", "Đơn vị tính", "Title 4"
+                "Mã Thuốc", "Tên Thuốc", "Đơn Vị Tính", "Đơn Giá"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(JTableThuoc);
+        jTableThuoc.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableThuocMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTableThuoc);
+        if (jTableThuoc.getColumnModel().getColumnCount() > 0) {
+            jTableThuoc.getColumnModel().getColumn(0).setResizable(false);
+            jTableThuoc.getColumnModel().getColumn(1).setResizable(false);
+            jTableThuoc.getColumnModel().getColumn(2).setResizable(false);
+            jTableThuoc.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         jLabel7.setText("Mã Thuốc");
 
@@ -155,14 +198,6 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel9.setText("Đơn Vị Tính");
 
         jLabel10.setText("Đơn Giá");
-
-        txtMaThuoc.setText("jTextField1");
-
-        txtTenThuoc.setText("jTextField2");
-
-        txtDonViTinh.setText("jTextField3");
-
-        txtDonGia.setText("jTextField4");
 
         cboTimThuoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã Thuốc", "Tên Thuốc", "Đơn Vị Tính" }));
 
@@ -175,10 +210,17 @@ public class MainFrame extends javax.swing.JFrame {
         btnThemThuoc.setText("Thêm");
 
         btnSuaThuoc.setText("Sửa");
+        btnSuaThuoc.setEnabled(false);
 
         btnXoaThuoc.setText("Xóa");
+        btnXoaThuoc.setEnabled(false);
 
         btnCkearThuocFrame.setText("Clear");
+        btnCkearThuocFrame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCkearThuocFrameActionPerformed(evt);
+            }
+        });
 
         jLabel11.setText("Tìm thuốc theo : ");
 
@@ -281,7 +323,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        MainJTabbed.addTab("Quản lý thuốc", jPanel1);
+        mainJTabbed.addTab("Quản lý thuốc", jPanel1);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -309,7 +351,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
         );
 
-        MainJTabbed.addTab("Quản lý hóa đơn", jPanel2);
+        mainJTabbed.addTab("Quản lý hóa đơn", jPanel2);
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -337,7 +379,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
         );
 
-        MainJTabbed.addTab("Quản lý hiệu thuốc", jPanel3);
+        mainJTabbed.addTab("Quản lý hiệu thuốc", jPanel3);
 
         jTableUser.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -511,7 +553,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        MainJTabbed.addTab("Quản lý User", jPanel4);
+        mainJTabbed.addTab("Quản lý User", jPanel4);
 
         txtCurrentUser.setText("123");
         txtCurrentUser.setEnabled(false);
@@ -538,7 +580,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(txtCurrentUser, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnLogout))
-                    .addComponent(MainJTabbed))
+                    .addComponent(mainJTabbed))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -551,7 +593,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(txtCurrentUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLogout))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MainJTabbed)
+                .addComponent(mainJTabbed)
                 .addContainerGap())
         );
 
@@ -610,7 +652,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void jTableUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableUserMouseClicked
         // TODO add your handling code here:
         int row = jTableUser.getSelectedRow();
-        setSelectedRow(row);
+        setSelectedRowUser(row);
         txtUser.setEnabled(false);
         btnThem.setEnabled(false);
         btnXoa.setEnabled(true);
@@ -622,7 +664,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         // TODO add your handling code here:
-        clearAll();
+        clearAllForUser();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void txtUserFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserFocusLost
@@ -639,15 +681,15 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         // TODO add your handling code here:
-        arrUser.remove(getSelectedRow());
+        arrUser.remove(getSelectedRowUser());
         hienThiListUser();
-        clearAll();
+        clearAllForUser();
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
-        arrUser.get(selectedRow).setUserpass(txtPass.getText());
-        arrUser.get(selectedRow).setUsertype(cboType.getSelectedIndex());
+        arrUser.get(selectedRowUser).setUserpass(txtPass.getText());
+        arrUser.get(selectedRowUser).setUsertype(cboType.getSelectedIndex());
         hienThiListUser();
     }//GEN-LAST:event_btnSuaActionPerformed
 
@@ -671,8 +713,38 @@ public class MainFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"Username không tồn tại!!!");
         }
     }//GEN-LAST:event_btnTimActionPerformed
+
+    private void jTableThuocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableThuocMouseClicked
+        // TODO add your handling code here:
+        int row = jTableThuoc.getSelectedRow();
+        setSelectedRowThuoc(row);
+        txtMaThuoc.setText(jTableThuoc.getValueAt(row, 0) + "");
+        txtTenThuoc.setText(jTableThuoc.getValueAt(row, 1) + "");
+        txtDonViTinh.setText(jTableThuoc.getValueAt(row, 2) + "");
+        txtDonGia.setText(jTableThuoc.getValueAt(row, 3) + "");
+        btnThemThuoc.setEnabled(false);
+        txtMaThuoc.setEnabled(false);
+        btnSua.setEnabled(true);
+        btnXoa.setEnabled(true);
+    }//GEN-LAST:event_jTableThuocMouseClicked
+
+    private void btnCkearThuocFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCkearThuocFrameActionPerformed
+        // TODO add your handling code here:
+        clearAllForThuoc();
+    }//GEN-LAST:event_btnCkearThuocFrameActionPerformed
     
-    private void clearAll(){
+    private void clearAllForThuoc(){
+        btnThemThuoc.setEnabled(true);
+        txtMaThuoc.setEnabled(true);
+        btnSua.setEnabled(false);
+        btnXoa.setEnabled(false);
+        txtMaThuoc.setText("");
+        txtTenThuoc.setText("");
+        txtDonViTinh.setText("");
+        txtDonGia.setText("");
+    }
+    
+    private void clearAllForUser(){
         txtUser.setEnabled(true);
         txtUser.setText("");
         txtPass.setText("");
@@ -717,8 +789,6 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable JTableThuoc;
-    private javax.swing.JTabbedPane MainJTabbed;
     private javax.swing.JButton btnCkearThuocFrame;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnLogout;
@@ -758,8 +828,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTableThuoc;
     private javax.swing.JTable jTableUser;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JTabbedPane mainJTabbed;
     private javax.swing.JTextField txtCurrentUser;
     private javax.swing.JTextField txtDonGia;
     private javax.swing.JTextField txtDonViTinh;
