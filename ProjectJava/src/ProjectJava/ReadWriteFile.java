@@ -101,6 +101,50 @@ public class ReadWriteFile {
             Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    //Đọc Danh Sách Nhân Viên
+    public static ArrayList<NhanVien> layNhanVienTuFile(String file){
+        ArrayList<NhanVien> listNV = new ArrayList<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            try {
+                while((line = br.readLine()) != null){
+                    String [] temp = line.split(":");
+                    NhanVien nv = new NhanVien();
+                    nv.setUserName(temp[0]);
+                    nv.setHoTen(temp[1]);
+                    nv.setDiaChi(temp[2]);
+                    nv.setSoDT(temp[3]);
+                    String [] ngaySinh = temp[4].split("/");
+                    nv.setNgaySinh(new Date(Integer.parseInt(ngaySinh[0]), Integer.parseInt(ngaySinh[1]), Integer.parseInt(ngaySinh[2])));
+                    listNV.add(nv);
+                }
+                br.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listNV;
+    }
+    //Ghi Danh Sách Nhân Viên
+    public static void ghiNhanVienVaoFile(String file, ArrayList<NhanVien> listNV){
+        try {
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
+            int i = 1;
+            for(NhanVien nv : listNV){
+                if(i == listNV.size()){
+                pw.print(nv.getUserName() + ":" + nv.getHoTen() + ":" + nv.getDiaChi() + ":" + nv.getSoDT() + ":" + nv.getNgaySinh().toString());
+                }else pw.print(nv.getUserName() + ":" + nv.getHoTen() + ":" + nv.getDiaChi() + ":" + nv.getSoDT() + ":" + nv.getNgaySinh().toString() + "\n");
+                i++;
+            }
+            pw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /*
     Author Cuong
     */

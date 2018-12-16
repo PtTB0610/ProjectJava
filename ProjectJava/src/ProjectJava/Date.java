@@ -49,4 +49,7 @@ public class Date {
     public int getNam() {
         return this.nam;
     }
+    public String toString(){
+        return this.ngay + "/" + this.thang + "/" + this.nam;
+    }
 }

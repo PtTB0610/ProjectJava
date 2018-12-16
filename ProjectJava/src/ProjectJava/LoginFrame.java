@@ -28,7 +28,7 @@ public class LoginFrame extends javax.swing.JFrame {
             public void windowClosing(WindowEvent e) {
                 int result = JOptionPane.showConfirmDialog(null, "Bạn muốn thoát chương trình?", "Xác nhận thoát" , JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if(result == 0){
-            e.getWindow().dispose();;
+            e.getWindow().dispose();
         }
             }
              
@@ -124,15 +124,21 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
-        this.dispose();
+        
+        int result = JOptionPane.showConfirmDialog(null, "Bạn muốn thoát chương trình?", "Xác nhận thoát" , JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if(result == 0){
+            this.dispose();
+        }
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
         boolean flag = false;
+        int index = 0;
         for (User user : arrUser) {
+            index++;
             if(txtUsername.getText().equals(user.getUsername()) && txtPassword.getText().equals(user.getUserpass())){
-                MainFrame mainFrame = new MainFrame(user, arrUser);
+                MainFrame mainFrame = new MainFrame(user, arrUser, index - 1);
                 mainFrame.setVisible(true);
                 flag = true;
                 this.dispose();
