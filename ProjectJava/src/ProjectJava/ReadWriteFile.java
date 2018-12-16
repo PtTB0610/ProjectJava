@@ -101,4 +101,64 @@ public class ReadWriteFile {
             Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    /*
+    Author Cuong
+    */
+    //Doc Danh Sach Hoa Don
+    public static ArrayList<HoaDon> layHoaDonTuFile(String file){
+        ArrayList<HoaDon> listHoaDon = new ArrayList<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            try {
+                while((line = br.readLine()) != null){
+                    String [] temp = line.split(":");
+                    HoaDon hoaDon = new HoaDon();
+                    Date ngayNhap = new Date();
+                    Thuoc thuoc = new Thuoc();
+                    
+                    hoaDon.setMaHoaDon(temp[0]);
+                    
+                    ngayNhap.setNgay(Integer.parseInt(temp[1]));
+                    ngayNhap.setThang(Integer.parseInt(temp[2]));
+                    ngayNhap.setNam(Integer.parseInt(temp[3]));
+                    
+                    hoaDon.setNgayNhap(ngayNhap);
+                    
+                    thuoc.setMaThuoc(temp[4]);
+                    thuoc.setTenThuoc(temp[5]);
+                    
+                    hoaDon.setThuoc(thuoc);
+                    
+                    listHoaDon.add(hoaDon);
+                }
+                br.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listHoaDon;
+    }
+    //Ghi Danh Sach Hoa Don
+    public static void ghiHoaDonVaoFile(String file, ArrayList<HoaDon> listHoaDon){
+        try {
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
+            int i = 1;
+            for(HoaDon hoaDon : listHoaDon){
+                if(i == listHoaDon.size()){
+                pw.print(hoaDon.getMaHoaDon() + ":" + 
+                        hoaDon.getNgayNhap().getNgay()+ ":" + hoaDon.getNgayNhap().getThang()+ ":" + hoaDon.getNgayNhap().getNam()+ ":"+
+                        hoaDon.getThuoc().getMaThuoc() + ":" + hoaDon.getThuoc().getTenThuoc());
+                }else pw.print(hoaDon.getMaHoaDon() + ":" + 
+                        hoaDon.getNgayNhap().getNgay()+ ":" + hoaDon.getNgayNhap().getThang()+ ":" + hoaDon.getNgayNhap().getNam()+ ":"+
+                        hoaDon.getThuoc().getMaThuoc() + ":" + hoaDon.getThuoc().getTenThuoc() + "\n");
+                i++;
+            }
+            pw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
