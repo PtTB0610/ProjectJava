@@ -43,7 +43,7 @@ public class HoaDon {
     }  
     
     public void setThuoc (Thuoc thuoc) {
-        this.ngayNhap = ngayNhap;
+        this.thuoc = thuoc;
     }
     
     public Thuoc getThuoc () {

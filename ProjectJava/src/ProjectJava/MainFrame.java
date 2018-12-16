@@ -5,6 +5,7 @@
  */
 package ProjectJava;
 
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -84,10 +85,13 @@ public class MainFrame extends javax.swing.JFrame {
         model = (DefaultTableModel) jTableHoaDon.getModel();
         model.setRowCount(0);
         for(HoaDon hd : arrHoaDon) {
-            String [] data = new String[3];
+            String [] data = new String[6];
             data [0] = hd.getMaHoaDon();
-            data [1] = hd.getNgayNhap().getNgay() + "/" + hd.getNgayNhap().getThang() + "/" + hd.getNgayNhap().getNam();
-            data [2] = hd.getThuoc().getMaThuoc() + " - " + hd.getThuoc().getTenThuoc() + "";
+            data [1] = hd.getNgayNhap().getNgay() + "";
+            data [2] = hd.getNgayNhap().getThang() + "";
+            data [3] = hd.getNgayNhap().getNam() + "";
+            data [4] = hd.getThuoc().getMaThuoc();
+            data [5] = hd.getThuoc().getTenThuoc();
             model.addRow(data);
         }
         jTableHoaDon.setModel(model);
@@ -180,6 +184,10 @@ public class MainFrame extends javax.swing.JFrame {
         txtHoaDonMaThuoc = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
         txtHoaDonTenThuoc = new javax.swing.JTextField();
+        btnThemHoaDon = new javax.swing.JButton();
+        btnXoaHoaDon = new javax.swing.JButton();
+        btnSuaHoaDon = new javax.swing.JButton();
+        btnClearHoaDon = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
@@ -377,11 +385,11 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Mã Hóa Đơn", "Ngày Nhập", "Mã Thuốc - Tên Thuốc"
+                "Mã Hóa Đơn", "Ngày", "Tháng", "Năm", "Mã Thuốc", "Tên Thuốc"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -414,6 +422,21 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel21.setText("Tên Thuốc");
 
+        btnThemHoaDon.setText("Thêm");
+        btnThemHoaDon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemHoaDonActionPerformed(evt);
+            }
+        });
+
+        btnXoaHoaDon.setText("Xóa");
+        btnXoaHoaDon.setEnabled(false);
+
+        btnSuaHoaDon.setText("Sửa");
+        btnSuaHoaDon.setEnabled(false);
+
+        btnClearHoaDon.setText("Clear");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -442,14 +465,23 @@ public class MainFrame extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(txtNam, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jLabel19))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel21)
-                            .addComponent(jLabel20))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtHoaDonMaThuoc)
-                            .addComponent(txtHoaDonTenThuoc, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(btnThemHoaDon)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                            .addComponent(btnXoaHoaDon)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnSuaHoaDon)
+                            .addGap(37, 37, 37)
+                            .addComponent(btnClearHoaDon))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel21)
+                                .addComponent(jLabel20))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtHoaDonMaThuoc)
+                                .addComponent(txtHoaDonTenThuoc, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -483,6 +515,12 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
                     .addComponent(txtHoaDonTenThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnThemHoaDon)
+                    .addComponent(btnXoaHoaDon)
+                    .addComponent(btnSuaHoaDon)
+                    .addComponent(btnClearHoaDon))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -730,7 +768,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(txtCurrentUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLogout))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainJTabbed)
+                .addComponent(mainJTabbed, javax.swing.GroupLayout.PREFERRED_SIZE, 484, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -882,7 +920,41 @@ public class MainFrame extends javax.swing.JFrame {
         txtMaHoaDon.setEnabled(false);
         txtHoaDonMaThuoc.setEnabled(false);
         txtHoaDonTenThuoc.setEnabled(false);
+        
     }//GEN-LAST:event_jTableHoaDonMouseClicked
+
+    private void btnThemHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemHoaDonActionPerformed
+        try {
+            DefaultTableModel model = (DefaultTableModel) jTableHoaDon.getModel();
+                String [] data = new String[6];
+                data [0] = txtMaHoaDon.getText();
+                data [1] = txtNgay.getText();
+                data [2] = txtThang.getText();
+                data [3] = txtNam.getText();
+                data [4] = txtHoaDonMaThuoc.getText();
+                data [5] = txtHoaDonTenThuoc.getText() + "";
+
+                Date date = new Date(Integer.parseInt(txtNgay.getText()),
+                        Integer.parseInt(txtThang.getText()),
+                        Integer.parseInt(txtNam.getText()));
+
+                Thuoc thuoc = new Thuoc(txtHoaDonMaThuoc.getText(),txtHoaDonTenThuoc.getText(),"",0.0);
+
+                arrHoaDon.add( new HoaDon(txtMaHoaDon.getText(),date,thuoc));
+                txtMaHoaDon.setText("");
+                txtNgay.setText("");
+                txtThang.setText("");
+                txtNam.setText("");
+                txtHoaDonMaThuoc.setText("");
+                txtHoaDonTenThuoc.setText("");
+                model.addRow(data);
+            jTableHoaDon.setModel(model);
+        }
+        catch(Exception e)
+        {
+            e.getMessage();
+        }
+    }//GEN-LAST:event_btnThemHoaDonActionPerformed
     
     private void clearAllForThuoc(){
         btnThemThuoc.setEnabled(true);
@@ -942,16 +1014,20 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCkearThuocFrame;
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnClearHoaDon;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnSapXep;
     private javax.swing.JButton btnSapXepThuoc;
     private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnSuaHoaDon;
     private javax.swing.JButton btnSuaThuoc;
     private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnThemHoaDon;
     private javax.swing.JButton btnThemThuoc;
     private javax.swing.JButton btnTim;
     private javax.swing.JButton btnTimThuoc;
     private javax.swing.JButton btnXoa;
+    private javax.swing.JButton btnXoaHoaDon;
     private javax.swing.JButton btnXoaThuoc;
     private javax.swing.JComboBox<String> cboSapXep;
     private javax.swing.JComboBox<String> cboSapXepThuoc;
