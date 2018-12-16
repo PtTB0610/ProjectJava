@@ -26,22 +26,27 @@ public class MainFrame extends javax.swing.JFrame {
     private User user;
     private ArrayList<User> arrUser;
     private ArrayList<Thuoc> arrThuoc;
+    private ArrayList<HoaDon> arrHoaDon;
     private int selectedRowUser = 0;
     private int selectedRowThuoc = 0;
+    private int selectedRowHoaDon = 0;
     
     public MainFrame(User user, ArrayList<User> arrUser) {
         initComponents();
         this.user = user;
         this.arrUser = arrUser;
         this.arrThuoc = ReadWriteFile.layThuocTuFile("thuoc.txt");
+        this.arrHoaDon = ReadWriteFile.layHoaDonTuFile("hoadon.txt");
         txtCurrentUser.setText(user.getUsername());
         if(user.getUsertype() == 1){
             mainJTabbed.setEnabledAt(3, false);
         }
         jTableUser.setColumnSelectionAllowed(false);
         jTableThuoc.setColumnSelectionAllowed(false);
+        jTableHoaDon.setColumnSelectionAllowed(false);
         hienThiListUser();
         hienThiListThuoc();
+        hienThiListHoaDon();
     }
     
     private void hienThiListUser(){
@@ -74,6 +79,19 @@ public class MainFrame extends javax.swing.JFrame {
         jTableThuoc.setModel(model);
     }
     
+    private void hienThiListHoaDon() {
+        DefaultTableModel model;
+        model = (DefaultTableModel) jTableHoaDon.getModel();
+        model.setRowCount(0);
+        for(HoaDon hd : arrHoaDon) {
+            String [] data = new String[3];
+            data [0] = hd.getMaHoaDon();
+            data [1] = hd.getNgayNhap().getNgay() + "/" + hd.getNgayNhap().getThang() + "/" + hd.getNgayNhap().getNam();
+            data [2] = hd.getThuoc().getMaThuoc() + " - " + hd.getThuoc().getTenThuoc() + "";
+            model.addRow(data);
+        }
+        jTableHoaDon.setModel(model);
+    }
     
     public int getSelectedRowThuoc() {
         return selectedRowThuoc;
@@ -95,6 +113,20 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public void setSelectedRowUser(int selectedRow) {
         this.selectedRowUser = selectedRow;
+    }
+    
+    /**
+     * @return the selectedRowHoaDon
+     */
+    public int getSelectedRowHoaDon() {
+        return selectedRowHoaDon;
+    }
+
+    /**
+     * @param selectedRowHoaDon the selectedRow to set
+     */
+    public void setSelectedRowHoaDon(int selectedRowHoaDon) {
+        this.selectedRowHoaDon = selectedRowHoaDon;
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -132,7 +164,22 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jTableHoaDon = new javax.swing.JTable();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        txtNgay = new javax.swing.JTextField();
+        txtThang = new javax.swing.JTextField();
+        txtNam = new javax.swing.JTextField();
+        txtMaHoaDon = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        txtHoaDonMaThuoc = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        txtHoaDonTenThuoc = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
@@ -325,31 +372,121 @@ public class MainFrame extends javax.swing.JFrame {
 
         mainJTabbed.addTab("Quản lý thuốc", jPanel1);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTableHoaDon.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Mã Hóa Đơn", "Ngày Nhập", "Mã Thuốc - Tên Thuốc"
             }
-        ));
-        jScrollPane2.setViewportView(jTable2);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableHoaDon.setMinimumSize(new java.awt.Dimension(60, 0));
+        jTableHoaDon.setPreferredSize(new java.awt.Dimension(300, 0));
+        jTableHoaDon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableHoaDonMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTableHoaDon);
+
+        jLabel13.setText("Mã Hóa Đơn");
+        jLabel13.setName(""); // NOI18N
+
+        jLabel14.setText("Ngày Nhập");
+
+        jLabel16.setText("Ngày:");
+
+        jLabel17.setText("Tháng:");
+
+        jLabel18.setText("Năm:");
+
+        jLabel19.setText("Thuốc");
+
+        jLabel20.setText("Mã Thuốc");
+
+        jLabel21.setText("Tên Thuốc");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 506, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel13)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtMaHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel14)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel15)
+                            .addGap(30, 30, 30)
+                            .addComponent(jLabel16)
+                            .addGap(2, 2, 2)
+                            .addComponent(txtNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel17)
+                            .addGap(2, 2, 2)
+                            .addComponent(txtThang, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel18)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtNam, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel19))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel21)
+                            .addComponent(jLabel20))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtHoaDonMaThuoc)
+                            .addComponent(txtHoaDonTenThuoc, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(txtMaHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel14)
+                .addGap(15, 15, 15)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel17)
+                    .addComponent(jLabel18)
+                    .addComponent(txtNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtThang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(txtHoaDonMaThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(txtHoaDonTenThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jLabel13.getAccessibleContext().setAccessibleName("jLabel13");
 
         mainJTabbed.addTab("Quản lý hóa đơn", jPanel2);
 
@@ -732,6 +869,20 @@ public class MainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         clearAllForThuoc();
     }//GEN-LAST:event_btnCkearThuocFrameActionPerformed
+
+    private void jTableHoaDonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableHoaDonMouseClicked
+        int row = jTableHoaDon.getSelectedRow();
+        setSelectedRowHoaDon(row);
+        txtMaHoaDon.setText(jTableHoaDon.getValueAt(row, 0) + "");
+        txtNgay.setText(jTableHoaDon.getValueAt(row, 1) + "");
+        txtThang.setText(jTableHoaDon.getValueAt(row, 2) + "");
+        txtNam.setText(jTableHoaDon.getValueAt(row, 3) + "");
+        txtHoaDonMaThuoc.setText(jTableHoaDon.getValueAt(row, 4) + "");
+        txtHoaDonTenThuoc.setText(jTableHoaDon.getValueAt(row, 5) + "");
+        txtMaHoaDon.setEnabled(false);
+        txtHoaDonMaThuoc.setEnabled(false);
+        txtHoaDonTenThuoc.setEnabled(false);
+    }//GEN-LAST:event_jTableHoaDonMouseClicked
     
     private void clearAllForThuoc(){
         btnThemThuoc.setEnabled(true);
@@ -810,7 +961,16 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -826,8 +986,8 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTableHoaDon;
     private javax.swing.JTable jTableThuoc;
     private javax.swing.JTable jTableUser;
     private javax.swing.JTextField jTextField4;
@@ -836,9 +996,15 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtDonGia;
     private javax.swing.JTextField txtDonViTinh;
     private javax.swing.JTextField txtGiaTriTim;
+    private javax.swing.JTextField txtHoaDonMaThuoc;
+    private javax.swing.JTextField txtHoaDonTenThuoc;
+    private javax.swing.JTextField txtMaHoaDon;
     private javax.swing.JTextField txtMaThuoc;
+    private javax.swing.JTextField txtNam;
+    private javax.swing.JTextField txtNgay;
     private javax.swing.JTextField txtPass;
     private javax.swing.JTextField txtTenThuoc;
+    private javax.swing.JTextField txtThang;
     private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
 }
