@@ -161,4 +161,47 @@ public class ReadWriteFile {
             Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    /*
+    Author Long
+    */
+     //Đọc Danh Sách Hiệu Thuốc
+    public static ArrayList<HieuThuoc> layHieuThuocTuFile(String file){
+        ArrayList<HieuThuoc> listHieuThuoc = new ArrayList<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            try {
+                while((line = br.readLine()) != null){
+                    String [] temp = line.split(":");
+                    HieuThuoc ht = new HieuThuoc();
+                    ht.setMaHieuThuoc(temp[0]);
+                    ht.setTenHieuThuoc(temp[1]);
+                    ht.setDiaChi(temp[2]);
+                    listHieuThuoc.add(ht);
+                }
+                br.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listHieuThuoc;
+    }
+    //Ghi Danh Sách Hiệu Thuốc
+    public static void ghiHieuThuocVaoFile(String file, ArrayList<HieuThuoc> listHieuThuoc){
+        try {
+            PrintWriter pw = new PrintWriter(new FileWriter(file));
+            int i = 1;
+            for(HieuThuoc ht : listHieuThuoc){
+                if(i == listHieuThuoc.size()){
+                pw.print(ht.getMaHieuThuoc() + ":" + ht.getTenHieuThuoc()+ ":" + ht.getDiaChi());
+                }else pw.print(ht.getMaHieuThuoc() + ":" + ht.getTenHieuThuoc()+ ":" + ht.getDiaChi()+ "\n");
+                i++;
+            }
+            pw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ReadWriteFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

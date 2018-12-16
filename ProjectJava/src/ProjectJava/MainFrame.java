@@ -28,9 +28,12 @@ public class MainFrame extends javax.swing.JFrame {
     private ArrayList<User> arrUser;
     private ArrayList<Thuoc> arrThuoc;
     private ArrayList<HoaDon> arrHoaDon;
+    private ArrayList<HieuThuoc> arrHieuThuoc;
     private int selectedRowUser = 0;
     private int selectedRowThuoc = 0;
     private int selectedRowHoaDon = 0;
+    private int selectedRowHieuThuoc = 0;
+    
     
     public MainFrame(User user, ArrayList<User> arrUser) {
         initComponents();
@@ -38,6 +41,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.arrUser = arrUser;
         this.arrThuoc = ReadWriteFile.layThuocTuFile("thuoc.txt");
         this.arrHoaDon = ReadWriteFile.layHoaDonTuFile("hoadon.txt");
+        this.arrHieuThuoc = ReadWriteFile.layHieuThuocTuFile("hieuthuoc.txt");
         txtCurrentUser.setText(user.getUsername());
         if(user.getUsertype() == 1){
             mainJTabbed.setEnabledAt(3, false);
@@ -48,6 +52,7 @@ public class MainFrame extends javax.swing.JFrame {
         hienThiListUser();
         hienThiListThuoc();
         hienThiListHoaDon();
+        hienThiListHieuThuoc();
     }
     
     private void hienThiListUser(){
@@ -100,6 +105,20 @@ public class MainFrame extends javax.swing.JFrame {
     public int getSelectedRowThuoc() {
         return selectedRowThuoc;
     }
+    
+    private void hienThiListHieuThuoc(){
+    DefaultTableModel model;
+    model = (DefaultTableModel) jTableHieuThuoc.getModel();
+    model.setRowCount(0);
+    for(HieuThuoc h : arrHieuThuoc){
+        String [] data = new String[3];
+        data [0] = h.getMaHieuThuoc();
+        data [1] = h.getTenHieuThuoc();
+        data [2] = h.getDiaChi();
+        model.addRow(data);
+   }
+    jTableHieuThuoc.setModel(model);
+}
 
     public void setSelectedRowThuoc(int selectedRowThuoc) {
         this.selectedRowThuoc = selectedRowThuoc;
@@ -132,6 +151,24 @@ public class MainFrame extends javax.swing.JFrame {
     public void setSelectedRowHoaDon(int selectedRowHoaDon) {
         this.selectedRowHoaDon = selectedRowHoaDon;
     }
+    
+            
+       /**
+     * @return the selectedRowHieuThuoc
+     */
+    public int getSelectedRowHieuThuoc() {
+        return selectedRowHieuThuoc;
+    }
+
+    /**
+     * @param selectedRowHieuThuoc the selectedRowHieuThuoc to set
+     */
+    public void setSelectedRowHieuThuoc(int selectedRowHieuThuoc) {
+        this.selectedRowHieuThuoc = selectedRowHieuThuoc;
+    }
+    
+  
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -189,8 +226,26 @@ public class MainFrame extends javax.swing.JFrame {
         btnSuaHoaDon = new javax.swing.JButton();
         btnClearHoaDon = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTableHieuThuoc = new javax.swing.JTable();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        txtMaHieuThuoc = new javax.swing.JTextField();
+        txtTenHieuThuoc = new javax.swing.JTextField();
+        txtDiaChi = new javax.swing.JTextField();
+        cboTimHieuThuoc = new javax.swing.JComboBox<>();
+        cboSapXepHieuThuoc = new javax.swing.JComboBox<>();
+        txtTimHieuThuoc = new javax.swing.JTextField();
+        btnSapXepHieuThuoc = new javax.swing.JButton();
+        btnTimHieuThuoc = new javax.swing.JButton();
+        btnThemHieuThuoc = new javax.swing.JButton();
+        btnSuaHieuThuoc = new javax.swing.JButton();
+        btnXoaHieuThuoc = new javax.swing.JButton();
+        btnClearHieuThuocFrame = new javax.swing.JButton();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableUser = new javax.swing.JTable();
@@ -468,7 +523,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(btnThemHoaDon)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                             .addComponent(btnXoaHoaDon)
                             .addGap(18, 18, 18)
                             .addComponent(btnSuaHoaDon)
@@ -528,30 +583,196 @@ public class MainFrame extends javax.swing.JFrame {
 
         mainJTabbed.addTab("Quản lý hóa đơn", jPanel2);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        jTableHieuThuoc.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Mã Hiệu Thuốc", "Tên Hiệu Thuốc", "Địa Chỉ"
             }
-        ));
-        jScrollPane3.setViewportView(jTable3);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableHieuThuoc.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableHieuThuocMouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(jTableHieuThuoc);
+
+        jLabel22.setText("Mã Hiệu Thuốc");
+
+        jLabel23.setText("Tên Hiệu Thuốc");
+
+        jLabel24.setText("Địa Chỉ");
+
+        txtMaHieuThuoc.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtMaHieuThuocFocusLost(evt);
+            }
+        });
+
+        cboTimHieuThuoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã Hiệu Thuốc", "Tên Hiệu Thuốc", "Địa Chỉ" }));
+
+        cboSapXepHieuThuoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã Hiệu Thuốc", "Tên Hiệu Thuốc", "Địa Chỉ" }));
+
+        btnSapXepHieuThuoc.setText("Sắp Xếp");
+        btnSapXepHieuThuoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSapXepHieuThuocActionPerformed(evt);
+            }
+        });
+
+        btnTimHieuThuoc.setText("Tìm");
+        btnTimHieuThuoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTimHieuThuocActionPerformed(evt);
+            }
+        });
+
+        btnThemHieuThuoc.setText("Thêm");
+        btnThemHieuThuoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemHieuThuocActionPerformed(evt);
+            }
+        });
+
+        btnSuaHieuThuoc.setText("Sửa");
+        btnSuaHieuThuoc.setEnabled(false);
+        btnSuaHieuThuoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaHieuThuocActionPerformed(evt);
+            }
+        });
+
+        btnXoaHieuThuoc.setText("Xóa");
+        btnXoaHieuThuoc.setEnabled(false);
+        btnXoaHieuThuoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaHieuThuocActionPerformed(evt);
+            }
+        });
+
+        btnClearHieuThuocFrame.setText("Clear");
+        btnClearHieuThuocFrame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearHieuThuocFrameActionPerformed(evt);
+            }
+        });
+
+        jLabel25.setText("Tìm theo : ");
+
+        jLabel26.setText("Sắp xếp theo : ");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel24)
+                            .addComponent(jLabel23, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtDiaChi)
+                            .addComponent(txtTenHieuThuoc)
+                            .addComponent(txtMaHieuThuoc)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtTimHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGap(27, 27, 27)
+                                        .addComponent(btnThemHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnXoaHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGap(20, 20, 20)
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                                .addComponent(jLabel26)
+                                                .addGap(28, 28, 28)
+                                                .addComponent(cboSapXepHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                                .addComponent(jLabel25)
+                                                .addGap(18, 18, 18)
+                                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(btnSuaHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(cboTimHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGap(20, 20, 20)
+                                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnTimHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnClearHieuThuocFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnSapXepHieuThuoc)))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(75, 75, 75)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(txtMaHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel23)
+                    .addComponent(txtTenHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel24)
+                    .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(56, 56, 56)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClearHieuThuocFrame)
+                    .addComponent(btnThemHieuThuoc)
+                    .addComponent(btnXoaHieuThuoc)
+                    .addComponent(btnSuaHieuThuoc))
+                .addGap(20, 20, 20)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(cboTimHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTimHieuThuoc))
+                .addGap(18, 18, 18)
+                .addComponent(txtTimHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel26)
+                    .addComponent(cboSapXepHieuThuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSapXepHieuThuoc))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 506, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 14, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         mainJTabbed.addTab("Quản lý hiệu thuốc", jPanel3);
@@ -955,6 +1176,109 @@ public class MainFrame extends javax.swing.JFrame {
             e.getMessage();
         }
     }//GEN-LAST:event_btnThemHoaDonActionPerformed
+
+    private void jTableHieuThuocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableHieuThuocMouseClicked
+        int row = jTableHieuThuoc.getSelectedRow();
+        setSelectedRowHieuThuoc(row);
+        txtMaHieuThuoc.setText(jTableHieuThuoc.getValueAt(row, 0) + "");
+        txtTenHieuThuoc.setText(jTableHieuThuoc.getValueAt(row, 1) + "");
+        txtDiaChi.setText(jTableHieuThuoc.getValueAt(row, 2) + "");
+        btnThemHieuThuoc.setEnabled(false);
+        txtMaThuoc.setEnabled(false);
+        btnSuaHieuThuoc.setEnabled(true);
+        btnXoaHieuThuoc.setEnabled(true);
+    }//GEN-LAST:event_jTableHieuThuocMouseClicked
+
+    private void btnSapXepHieuThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSapXepHieuThuocActionPerformed
+        // TODO add your handling code here:
+        if(cboSapXepHieuThuoc.getSelectedItem().equals("Mã Hiệu Thuốc")){
+            Collections.sort(arrHieuThuoc, new Comparator<HieuThuoc>(){
+                @Override
+                public int compare(HieuThuoc ht1, HieuThuoc ht2) {
+                    return ht1.getMaHieuThuoc().compareTo(ht2.getMaHieuThuoc());
+                }
+            });
+        }else if(cboSapXep.getSelectedItem().equals("Tên Hiệu Thuốc")){
+            Collections.sort(arrHieuThuoc, new Comparator<HieuThuoc>(){
+                @Override
+                public int compare(HieuThuoc ht1, HieuThuoc ht2) {
+                    return ht1.getTenHieuThuoc().compareTo(ht2.getTenHieuThuoc());
+                }
+            });
+        }
+        else if(cboSapXep.getSelectedItem().equals("Địa Chỉ")){
+            Collections.sort(arrHieuThuoc, new Comparator<HieuThuoc>(){
+                @Override
+                public int compare(HieuThuoc ht1, HieuThuoc ht2) {
+                    return ht1.getDiaChi().compareTo(ht2.getDiaChi());
+                }
+            });
+        }
+        hienThiListHieuThuoc();
+    }//GEN-LAST:event_btnSapXepHieuThuocActionPerformed
+
+    private void btnTimHieuThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimHieuThuocActionPerformed
+        boolean flag = false;
+        for (HieuThuoc ht : arrHieuThuoc) {
+            if(ht.getTenHieuThuoc().equals(txtTimHieuThuoc.getText())){
+                txtMaHieuThuoc.setText(ht.getMaHieuThuoc());
+                txtTenHieuThuoc.setText(ht.getTenHieuThuoc());
+                txtDiaChi.setText(ht.getDiaChi());
+                txtMaHieuThuoc.setEnabled(false);
+                btnThemHieuThuoc.setEnabled(false);
+                btnXoaHieuThuoc.setEnabled(true);
+                btnSuaHieuThuoc.setEnabled(true);
+                flag = true;
+                break;
+            }
+        }
+        if(!flag){
+            JOptionPane.showMessageDialog(null,"Hiệu Thuốc không tồn tại!!!");
+        }
+    }//GEN-LAST:event_btnTimHieuThuocActionPerformed
+
+    private void btnThemHieuThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemHieuThuocActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) jTableHieuThuoc.getModel();
+        String [] data = new String[3];
+        data [0] = txtMaHieuThuoc.getText();
+        data [1] = txtTenHieuThuoc.getText();
+        data [2] = txtDiaChi.getText();
+        arrHieuThuoc.add( new HieuThuoc(txtMaHieuThuoc.getText(),txtTenHieuThuoc.getText(),txtDiaChi.getText()));
+        txtMaHieuThuoc.setText("");
+        txtTenHieuThuoc.setText("");
+        txtDiaChi.setText("");
+        model.addRow(data);
+        jTableUser.setModel(model);
+    }//GEN-LAST:event_btnThemHieuThuocActionPerformed
+
+    private void btnSuaHieuThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaHieuThuocActionPerformed
+        arrHieuThuoc.get(selectedRowHieuThuoc).setMaHieuThuoc(txtMaHieuThuoc.getText());
+        arrHieuThuoc.get(selectedRowHieuThuoc).setTenHieuThuoc(txtTenHieuThuoc.getText());
+        arrHieuThuoc.get(selectedRowHieuThuoc).setDiaChi(txtDiaChi.getText());
+        hienThiListHieuThuoc();
+    }//GEN-LAST:event_btnSuaHieuThuocActionPerformed
+
+    private void btnXoaHieuThuocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaHieuThuocActionPerformed
+        arrHieuThuoc.remove(getSelectedRowHieuThuoc());
+        hienThiListHieuThuoc();
+        clearAllForHieuThuoc();
+    }//GEN-LAST:event_btnXoaHieuThuocActionPerformed
+
+    private void btnClearHieuThuocFrameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearHieuThuocFrameActionPerformed
+        clearAllForHieuThuoc();
+    }//GEN-LAST:event_btnClearHieuThuocFrameActionPerformed
+
+    private void txtMaHieuThuocFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaHieuThuocFocusLost
+            for(HieuThuoc ht : arrHieuThuoc){
+            if(txtMaHieuThuoc.getText().equals(ht.getMaHieuThuoc())){
+                JOptionPane.showMessageDialog(null,"Mã hiệu Thuốc đã được sử dụng!!!");
+                txtMaHieuThuoc.setText("");
+                txtMaHieuThuoc.requestFocus();
+                break;
+            }
+        }
+    }//GEN-LAST:event_txtMaHieuThuocFocusLost
     
     private void clearAllForThuoc(){
         btnThemThuoc.setEnabled(true);
@@ -975,6 +1299,16 @@ public class MainFrame extends javax.swing.JFrame {
         btnThem.setEnabled(true);
         btnXoa.setEnabled(false);
         btnSua.setEnabled(false);
+    }
+    
+    private void clearAllForHieuThuoc(){
+        btnThemHieuThuoc.setEnabled(true);
+        txtMaHieuThuoc.setEnabled(true);
+        btnSuaHieuThuoc.setEnabled(false);
+        btnXoaHieuThuoc.setEnabled(false);
+        txtMaHieuThuoc.setText("");
+        txtTenHieuThuoc.setText("");
+        txtDiaChi.setText("");
     }
     /**
      * @param args the command line arguments
@@ -1014,23 +1348,31 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCkearThuocFrame;
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnClearHieuThuocFrame;
     private javax.swing.JButton btnClearHoaDon;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnSapXep;
+    private javax.swing.JButton btnSapXepHieuThuoc;
     private javax.swing.JButton btnSapXepThuoc;
     private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnSuaHieuThuoc;
     private javax.swing.JButton btnSuaHoaDon;
     private javax.swing.JButton btnSuaThuoc;
     private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnThemHieuThuoc;
     private javax.swing.JButton btnThemHoaDon;
     private javax.swing.JButton btnThemThuoc;
     private javax.swing.JButton btnTim;
+    private javax.swing.JButton btnTimHieuThuoc;
     private javax.swing.JButton btnTimThuoc;
     private javax.swing.JButton btnXoa;
+    private javax.swing.JButton btnXoaHieuThuoc;
     private javax.swing.JButton btnXoaHoaDon;
     private javax.swing.JButton btnXoaThuoc;
     private javax.swing.JComboBox<String> cboSapXep;
+    private javax.swing.JComboBox<String> cboSapXepHieuThuoc;
     private javax.swing.JComboBox<String> cboSapXepThuoc;
+    private javax.swing.JComboBox<String> cboTimHieuThuoc;
     private javax.swing.JComboBox<String> cboTimThuoc;
     private javax.swing.JComboBox<String> cboType;
     private javax.swing.JLabel jLabel1;
@@ -1047,6 +1389,11 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1058,29 +1405,34 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable3;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JTable jTableHieuThuoc;
     private javax.swing.JTable jTableHoaDon;
     private javax.swing.JTable jTableThuoc;
     private javax.swing.JTable jTableUser;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTabbedPane mainJTabbed;
     private javax.swing.JTextField txtCurrentUser;
+    private javax.swing.JTextField txtDiaChi;
     private javax.swing.JTextField txtDonGia;
     private javax.swing.JTextField txtDonViTinh;
     private javax.swing.JTextField txtGiaTriTim;
     private javax.swing.JTextField txtHoaDonMaThuoc;
     private javax.swing.JTextField txtHoaDonTenThuoc;
+    private javax.swing.JTextField txtMaHieuThuoc;
     private javax.swing.JTextField txtMaHoaDon;
     private javax.swing.JTextField txtMaThuoc;
     private javax.swing.JTextField txtNam;
     private javax.swing.JTextField txtNgay;
     private javax.swing.JTextField txtPass;
+    private javax.swing.JTextField txtTenHieuThuoc;
     private javax.swing.JTextField txtTenThuoc;
     private javax.swing.JTextField txtThang;
+    private javax.swing.JTextField txtTimHieuThuoc;
     private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
 }
